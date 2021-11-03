@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 
 import 'package:friendster/screens/login_screen.dart';
-import 'home_screen.dart';
+import 'navigation_screen.dart';
 
 class SignupScreen extends StatefulWidget {
   @override
@@ -45,7 +45,7 @@ class _SignupScreenState extends State<SignupScreen> {
       Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
-              builder: (context) => HomeScreen()), (Route<dynamic> route) => false);
+              builder: (context) => NavigationScreen()), (Route<dynamic> route) => false);
     } on PlatformException catch (e) {
       var message = 'An error occurred, please check your credentials';
       if (e.message != null) {
