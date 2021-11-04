@@ -22,11 +22,13 @@ class _NavigationScreenState extends State<NavigationScreen> {
     ProfileScreen(),
   ];
 
+  var titles = ['Home', 'Explore', 'Chats', 'Profile'];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Home'),
+        title: Text(titles[currentIndex]),
         actions: [
           DropdownButtonHideUnderline(
             child: DropdownButton(
@@ -61,7 +63,10 @@ class _NavigationScreenState extends State<NavigationScreen> {
           ),
         ],
       ),
-      body: screens[currentIndex],
+      body: IndexedStack(
+        index: currentIndex,
+        children: screens,
+      ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         backgroundColor: Colors.blue,
