@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../widgets/post_item.dart';
+import '../widgets/user_posts.dart';
 import '../widgets/new_post.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -12,7 +14,6 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   final userId = FirebaseAuth.instance.currentUser.uid;
-
 
   String _post = '';
 
@@ -29,12 +30,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void addNewPost(String post) async {
-    final userData = await FirebaseFirestore.instance.collection('users').doc(userId).get();
+    final userData =
+        await FirebaseFirestore.instance.collection('users').doc(userId).get();
     try {
-      await FirebaseFirestore.instance
-          .collection('posts')
-          .add({'post': post,
-      'userId': userId,
+      await FirebaseFirestore.instance.collection('posts').add({
+        'post': post,
+        'userId': userId,
         'username': userData['username'],
       });
     } on Exception catch (e) {
@@ -49,37 +50,40 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: EdgeInsets.all(10),
-        child: Container(
-          child: Row(
-            children: [
-              Container(
-                  height: 100,
-                  width: 100,
-                  child: CircleAvatar(
-                    backgroundImage: AssetImage('assets/profile.png'),
-                  )),
-              Container(
-                margin: EdgeInsets.fromLTRB(30, 10, 20, 30),
-                child: FutureBuilder(
-                  future: FirebaseFirestore.instance
-                      .collection('users')
-                      .doc(userId)
-                      .get(),
-                  builder: (ctx, snapshot) {
-                    return Text(
-                      snapshot.data['username'],
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                    );
-                  },
+      body: Column(children: [
+        Padding(
+          padding: EdgeInsets.all(10),
+          child: Container(
+            child: Row(
+              children: [
+                Container(
+                    height: 100,
+                    width: 100,
+                    child: CircleAvatar(
+                      backgroundImage: AssetImage('assets/profile.png'),
+                    )),
+                Container(
+                  margin: EdgeInsets.fromLTRB(30, 10, 20, 30),
+                  child: FutureBuilder(
+                    future: FirebaseFirestore.instance
+                        .collection('users')
+                        .doc(userId)
+                        .get(),
+                    builder: (ctx, snapshot) {
+                      return Text(
+                        snapshot.data['username'],
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 20),
+                      );
+                    },
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
-      ),
+        Expanded(child: Container(child: UserPosts())),
+      ]),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () => showDialog(
@@ -95,6 +99,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       if (value.isEmpty) {
                         return 'Post can\'t be empty';
                       }
+                      else if (value.length > 100) {
+                        return 'Post can\'t be more than 100 characters';
+                      }
                       return null;
                     },
                     onSaved: (value) {
@@ -103,10 +110,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
                 actions: [
-                  ElevatedButton(onPressed: _submit , child: Text('Add post')),
-                  ElevatedButton(onPressed: (){
-                    Navigator.of(context).pop();
-                  }, child: Text('Cancel')),
+                  ElevatedButton(onPressed: _submit, child: Text('Add post')),
+                  ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text('Cancel')),
                 ],
               );
             }),
