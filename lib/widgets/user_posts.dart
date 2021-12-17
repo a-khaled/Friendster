@@ -5,7 +5,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../widgets/post_item.dart';
 
 class UserPosts extends StatelessWidget {
-  final userId = FirebaseAuth.instance.currentUser.uid;
+  var userId;
+
+
+  UserPosts(this.userId);
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +28,8 @@ class UserPosts extends StatelessWidget {
         return ListView.builder(
             itemCount: postDocs.length,
             itemBuilder: (ctx, index) =>
-                PostItem(postDocs[index]['username'], postDocs[index]['post'], postDocs[index]['userId'] == userId));
+                PostItem(postDocs[index]['username'], postDocs[index]['post'], postDocs[index]['userId'] == userId),
+        );
       },
     );
   }

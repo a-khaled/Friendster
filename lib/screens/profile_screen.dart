@@ -82,7 +82,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           ),
         ),
-        Expanded(child: Container(child: UserPosts())),
+        Expanded(child: Container(child: UserPosts(userId))),
       ]),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),

@@ -6,12 +6,14 @@ import '../widgets/post_item.dart';
 
 class AllPosts extends StatelessWidget {
   final userId = FirebaseAuth.instance.currentUser.uid;
+  var followUid;
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
       stream: FirebaseFirestore.instance
-          .collection('posts').where('userId', isNotEqualTo: userId)
+          .collection('posts')
+          .where('userId', isNotEqualTo: userId)
           .snapshots(),
       builder: (ctx, postSnapshot) {
         if (postSnapshot.connectionState == ConnectionState.waiting) {
@@ -24,8 +26,12 @@ class AllPosts extends StatelessWidget {
         return ListView.builder(
             itemCount: postDocs.length,
             itemBuilder: (ctx, index) => PostItem(
-                postDocs[index]['username'], postDocs[index]['post'], postDocs[index]['userId'] == userId)
-        );
+                  postDocs[index]['username'],
+                  postDocs[index]['post'],
+                  postDocs[index]['userId'] == userId,
+                  userId,
+                  postDocs[index]['userId'],
+                ));
       },
     );
   }
